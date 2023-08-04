@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "baseUrl": "tsconfig",
+    "rootDir": ".",
+    "lib": ["es2018", "dom"],
+    "declaration": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noEmitOnError": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitThis": true,
+    "noUnusedParameters": false,
+    "noUnusedLocals": false,
+    "outDir": "../../dist",
+    "resolveJsonModule": true,
+    "skipDefaultLibCheck": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strictNullChecks": true,
+    "target": "es6",
+    "types": ["node"]
+  },
+  "include": ["./schematics/**/*"],
+  "exclude": ["**/*.spec.ts", "./schematics/test-utils.ts", ]
+}

@@ -1,0 +1,10 @@
+{
+  "$schema": "../../../node_modules/@angular-devkit/schematics/collection-schema.json",
+  "schematics": {
+    "ng-add": {
+      "description": "Adds dependency",
+      "factory": "./ng-add/index",
+      "hidden": true
+    }
+  }
+}
