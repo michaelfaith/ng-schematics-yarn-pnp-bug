@@ -1,27 +1,46 @@
-# NgSchematicsYarnPnpBug
+# Angular Schematics + Yarn PnP Bug
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.0.2.
+This repo re-creates a bug with using the schematics API from within a yarn pnp 
+workspace.
 
-## Development server
+The repo contains an Angular library (my-lib) within a yarn (berry) pnp workspace.  The library has a `schematics` entry point, with a single `ng-add`
+schematic that installs the library dependency.  The unit test for this schematic
+uses the `SchematicTestRunner`'s `runExternalSchematic` function to build a test
+project to execute the tests within.  Calling `runExternalESchematic` within a pnp environment results in an error, due to the `collection.json` of the library
+containing the schematic that you're trying to run being improperly constructed.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+```bash
+ENOTDIR: not a directory, lstat '/node_modules/@schematics/angular/collection.json/package.json'
 
-## Code scaffolding
+      21005 |
+      21006 | function makeError$1(code, message) {
+    > 21007 |   return Object.assign(new Error(`${code}: ${message}`), { code });
+            |                        ^
+      21008 | }
+      21009 | function EBUSY(message) {
+      21010 |   return makeError$1(`EBUSY`, message);
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+      at makeError$1 (../../.pnp.cjs:21007:24)
+      at ENOTDIR (../../.pnp.cjs:21025:10)
+      at ZipFS.resolveFilename (../../.pnp.cjs:22607:15)
+      at ZipFS.realpathSync (../../.pnp.cjs:22398:28)
+      at ../../.pnp.cjs:23704:100
+      at ../../.pnp.cjs:24200:60
+      at ZipOpenFS.getZipSync (../../.pnp.cjs:24329:14)
+      at ZipOpenFS.makeCallSync (../../.pnp.cjs:24200:17)
+      at ZipOpenFS.realpathSync (../../.pnp.cjs:23696:17)
+      at VirtualFS.realpathSync (../../.pnp.cjs:23446:26)
+      at PosixFS.realpathSync (../../.pnp.cjs:23197:41)
+      at NodePathFS.realpathSync (../../.pnp.cjs:23197:41)
+      at maybeRealpathSync (../../.yarn/cache/resolve-patch-6d2631dc64-66cc788f13.zip/node_modules/resolve/lib/sync.js:52:16)
+      at resolveSync (../../.yarn/cache/resolve-patch-6d2631dc64-66cc788f13.zip/node_modules/resolve/lib/sync.js:97:25)
+      at NodeModulesTestEngineHost.resolve (../angular_devkit/schematics/tools/node-module-engine-host.ts:61:39)
+      at NodeModulesTestEngineHost.resolve (../angular_devkit/schematics/tools/node-module-engine-host.ts:68:29)
+      at createTestCaseSetup (schematics/test-utils.ts:117:40)
+```
 
-## Build
+## Repro steps
+Run from either repo root or `./projects/my-lib`
+1. Run `yarn`
+1. Run `yarn test`
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
